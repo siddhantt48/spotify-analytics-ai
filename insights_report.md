@@ -1,16 +1,19 @@
 # Spotify Product Analytics — Insights Report
-_Generated 2026-07-26T01:43:59_
+_Generated 2026-08-10T12:58:54_
 
 ## AI-Generated Summary
 
-* Key findings:
-  * The most engaged quartile (Q1) plays 7.2x more than the least engaged quartile (Q4), with nearly identical skip rates, indicating a significant opportunity to increase overall engagement by targeting Q4 users.
-  * Free-plan users average 104.6 plays/user vs 99.1 for premium, with similar skip rates, suggesting that the free plan may be a more effective way to drive engagement.
-  * The decline in total plays (-17.4%) and active users (-20.7%) from week 1 to week 8 may be concentrated in specific genres or user segments, which could be mitigated by targeted interventions.
-* Connecting tables: The high skip rates in certain genres (e.g. classical, trance) may be related to the low engagement levels in the Q4 user segment, as these users may be more likely to skip tracks in genres they are less familiar with.
-* Risk: The significant decline in total plays and active users over the 8-week period (-17.4% and -20.7%, respectively) poses a risk to revenue and retention.
-* Opportunity: The high engagement levels of free-plan users (104.6 plays/user) present an opportunity to increase overall engagement and potentially drive revenue through targeted promotions or upselling.
-* Recommendation: Offer a limited-time promotion to Q4 users, providing them with a curated playlist of popular tracks in genres with low skip rates (e.g. reggaeton), to increase their engagement and encourage them to upgrade to a premium plan.
+* Key findings: 
+  * The most engaged quartile (Q1) plays 7.2x more than the least engaged quartile (Q4), with nearly identical skip rates, indicating a significant opportunity to increase engagement among lower-quartile users.
+  * Free-plan users average 104.6 plays/user vs 99.1 for premium, with similar skip rates, suggesting that the free plan may be driving more engagement.
+  * The 3.9-point spread in skip rates among high-skip genres (classical to spanish) may indicate opportunities to optimize content recommendations.
+* Connecting tables: 
+  * The decline in total plays (-17.4%) and active users (-20.7%) from week 1 to week 8 may be related to the concentration of engagement among power users (Q1), as the most engaged quartile plays significantly more than the others.
+* Risk and opportunity: 
+  * Risk: The retention rate dropped to 0% in week 8, indicating a significant issue with user retention that needs to be addressed (-20.7% change in active users).
+  * Opportunity: The high engagement among free-plan users (104.6 plays/user) presents an opportunity to convert these users to premium plans, potentially increasing revenue.
+* Recommendation: 
+  * Offer a limited-time promotion to free-plan users who have high engagement (e.g., >100 plays/user) to upgrade to a premium plan, potentially increasing revenue and retention among these users.
 
 ---
 

@@ -103,7 +103,7 @@ the insights script.
    This prints the summary and writes the full report to
    `insights_report.md`.
 
-## Design decisions worth knowing (in case you're asked)
+## Design notes
 
 - **Why SQLite, not Postgres/MySQL?** Zero setup — it's a single file, no
   server. All the SQL here (joins, CTEs, window functions) is standard and
