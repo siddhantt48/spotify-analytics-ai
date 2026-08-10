@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spotify Product Analytics Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root { --accent:#1DB954; --bg:#0f0f0f; --card:#181818; --text:#e8e8e8; --muted:#9a9a9a; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; }
+  header { padding:28px 32px 16px; border-bottom:1px solid #2a2a2a; }
+  header h1 { margin:0 0 4px; font-size:22px; }
+  header p { margin:0; color:var(--muted); font-size:13px; }
+  .summary { margin:20px 32px; padding:18px 22px; background:var(--card); border-left:4px solid var(--accent); border-radius:6px; white-space:pre-wrap; line-height:1.55; font-size:14px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(420px,1fr)); gap:20px; padding:8px 32px 40px; }
+  .card { background:var(--card); border-radius:10px; padding:18px; }
+  .card h3 { margin:0 0 12px; font-size:14px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid #2a2a2a; }
+  th { color:var(--muted); font-weight:600; }
+  canvas { max-height:280px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Spotify Product Analytics Dashboard</h1>
+  <p>Generated 2026-07-26T01:44:11 &middot; SQL analysis + AI-generated insights</p>
+</header>
+
+<div class="summary">* Key findings:
+  * The most engaged quartile (Q1) plays 7.2x more than the least engaged quartile (Q4), with nearly identical skip rates, indicating a significant opportunity to increase overall engagement by targeting Q4 users.
+  * Free-plan users average 104.6 plays/user vs 99.1 for premium, with similar skip rates, suggesting that the free plan may be a more effective way to drive engagement.
+  * The decline in total plays (-17.4%) and active users (-20.7%) from week 1 to week 8 may be concentrated in specific genres or user segments, which could be mitigated by targeted interventions.
+* Connecting tables: The high skip rates in certain genres (e.g. classical, trance) may be related to the low engagement levels in the Q4 user segment, as these users may be more likely to skip tracks in genres they are less familiar with.
+* Risk: The significant decline in total plays and active users over the 8-week period (-17.4% and -20.7%, respectively) poses a risk to revenue and retention.
+* Opportunity: The high engagement levels of free-plan users (104.6 plays/user) present an opportunity to increase overall engagement and potentially drive revenue through targeted promotions or upselling.
+* Recommendation: Offer a limited-time promotion to Q4 users, providing them with a curated playlist of popular tracks in genres with low skip rates (e.g. reggaeton), to increase their engagement and encourage them to upgrade to a premium plan.</div>
+
+<div class="grid">
+  <div class="card"><h3>Skip Rate by Genre (top 12)</h3><canvas id="chartSkip"></canvas></div>
+  <div class="card"><h3>Weekly Engagement Trend</h3><canvas id="chartTrend"></canvas></div>
+  <div class="card"><h3>Week-over-Week Retention</h3><canvas id="chartRetention"></canvas></div>
+  <div class="card"><h3>Power User Segmentation (avg plays/user)</h3><canvas id="chartPower"></canvas></div>
+  <div class="card"><h3>Genre Diversity by Volume Bucket</h3><canvas id="chartDiversity"></canvas></div>
+  <div class="card"><h3>Free vs Premium</h3><canvas id="chartPlan"></canvas></div>
+  <div class="card" style="grid-column:1/-1">
+    <h3>Top Tracks by Completion Rate</h3>
+    <table>
+      <thead><tr><th>Track</th><th>Artist</th><th>Genre</th><th>Plays</th><th>Completion %</th></tr></thead>
+      <tbody id="topTracksBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const DATA = {"skip_by_genre": [["classical", 28.0], ["trance", 27.1], ["indie", 26.6], ["world-music", 26.5], ["minimal-techno", 26.2], ["singer-songwriter", 26.1], ["emo", 25.9], ["soul", 25.8], ["disco", 25.4], ["death-metal", 25.2], ["honky-tonk", 24.9], ["disney", 24.5]], "weekly_trend": [[1, 8444, 575], [2, 8512, 571], [3, 8150, 546], [4, 7884, 533], [5, 7609, 505], [6, 7118, 481], [7, 6917, 451], [8, 6978, 456]], "retention": [[1, 96.9], [2, 93.0], [3, 93.0], [4, 92.5], [5, 91.3], [6, 91.3], [7, 97.8]], "power_users": [[1, 223.7, 20.5], [2, 83.7, 19.5], [3, 72.4, 21.0], [4, 31.0, 20.8]], "diversity": [["low_volume", 6.9], ["mid_volume", 22.9], ["high_volume", 59.3]], "plan_comparison": [["free", 104.6, 20.3], ["premium", 99.1, 20.8]], "top_tracks": [["Red Red Wine", "UB40", "reggae", 9, 100.0], ["Fiel", "Los Legendarios;Wisin;Jhay Cortez", "reggaeton", 9, 100.0], ["Carmelina", "Merengues Dorados", "reggaeton", 8, 100.0], ["Yo Se Que Tu", "Marcianeke", "reggaeton", 8, 100.0], ["Light On", "Maggie Rogers", "indie-pop", 7, 100.0], ["Hey DJ", "CNCO;Yandel", "reggaeton", 7, 100.0], ["Que\u0301date", "Grupo C4", "reggaeton", 7, 100.0], ["Molly", "ITHAN NY;King Savagge;Rich Melody", "reggaeton", 7, 100.0], ["Hey Ma (with J Balvin & Pitbull feat. Camila Cabello)", "J Balvin;Pitbull;Camila Cabello", "reggaeton", 7, 100.0], ["September Song", "JP Cooper", "house", 7, 100.0]]};
+
+Chart.defaults.color = "#9a9a9a";
+Chart.defaults.borderColor = "#2a2a2a";
+const ACCENT = "#1DB954";
+const ACCENT2 = "#535353";
+
+new Chart(document.getElementById("chartSkip"), {
+  type: "bar",
+  data: { labels: DATA.skip_by_genre.map(r => r[0]),
+           datasets: [{ label: "Skip rate %", data: DATA.skip_by_genre.map(r => r[1]), backgroundColor: ACCENT }] },
+  options: { indexAxis: "y", plugins: { legend: { display:false } } }
+});
+
+new Chart(document.getElementById("chartTrend"), {
+  type: "line",
+  data: { labels: DATA.weekly_trend.map(r => "W"+r[0]),
+           datasets: [
+             { label: "Total plays", data: DATA.weekly_trend.map(r => r[1]), borderColor: ACCENT, backgroundColor: ACCENT, tension:.3 },
+             { label: "Active users", data: DATA.weekly_trend.map(r => r[2]), borderColor: ACCENT2, backgroundColor: ACCENT2, tension:.3, yAxisID: "y1" }
+           ] },
+  options: { scales: { y1: { position:"right", grid:{drawOnChartArea:false} } } }
+});
+
+new Chart(document.getElementById("chartRetention"), {
+  type: "line",
+  data: { labels: DATA.retention.map(r => "W"+r[0]),
+           datasets: [{ label: "Retention %", data: DATA.retention.map(r => r[1]), borderColor: ACCENT, backgroundColor: ACCENT+"33", fill:true, tension:.3 }] },
+  options: { scales: { y: { min:80, max:100 } } }
+});
+
+new Chart(document.getElementById("chartPower"), {
+  type: "bar",
+  data: { labels: DATA.power_users.map(r => "Q"+r[0]),
+           datasets: [{ label: "Avg plays/user", data: DATA.power_users.map(r => r[1]), backgroundColor: [ACCENT,"#4CAF50","#81C784","#C8E6C9"] }] },
+  options: { plugins: { legend: { display:false } } }
+});
+
+new Chart(document.getElementById("chartDiversity"), {
+  type: "bar",
+  data: { labels: DATA.diversity.map(r => r[0].replace("_"," ")),
+           datasets: [{ label: "Avg distinct genres", data: DATA.diversity.map(r => r[1]), backgroundColor: ACCENT }] },
+  options: { plugins: { legend: { display:false } } }
+});
+
+new Chart(document.getElementById("chartPlan"), {
+  type: "bar",
+  data: { labels: DATA.plan_comparison.map(r => r[0]),
+           datasets: [
+             { label: "Avg plays/user", data: DATA.plan_comparison.map(r => r[1]), backgroundColor: ACCENT },
+             { label: "Skip rate %", data: DATA.plan_comparison.map(r => r[2]), backgroundColor: ACCENT2 }
+           ] }
+});
+
+const tbody = document.getElementById("topTracksBody");
+DATA.top_tracks.forEach(r => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}%</td>`;
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>
