@@ -9,14 +9,29 @@ layer has something meaningful to analyze.
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+import os
 import random
 
 random.seed(42)
 np.random.seed(42)
 
-DATA_DIR = "/sessions/loving-funny-tesla/mnt/outputs/spotify-analytics-ai/data"
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = f"{BASE}/data"
 
-tracks = pd.read_csv(f"{DATA_DIR}/tracks_raw.csv", index_col=0)
+# The raw dataset isn't checked into the repo — download dataset.csv from
+# https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset and
+# save it as data/tracks_raw.csv. The cleaned data/tracks.csv this writes is
+# already committed, so you only need this step to regenerate from scratch.
+RAW_PATH = f"{DATA_DIR}/tracks_raw.csv"
+if not os.path.exists(RAW_PATH):
+    raise SystemExit(
+        f"Missing {RAW_PATH}. Download the Spotify Tracks Dataset from "
+        "https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset "
+        "and save it there. (data/tracks.csv is already in the repo if you "
+        "just want to build the DB.)"
+    )
+
+tracks = pd.read_csv(RAW_PATH, index_col=0)
 tracks = tracks.dropna(subset=["track_id", "track_genre"]).drop_duplicates(subset=["track_id"])
 
 genres = tracks["track_genre"].unique().tolist()

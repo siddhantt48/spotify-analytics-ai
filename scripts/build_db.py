@@ -3,19 +3,14 @@ import sqlite3
 import pandas as pd
 import os
 
-BASE = "/sessions/loving-funny-tesla/mnt/outputs/spotify-analytics-ai"
-# SQLite needs proper file locking for its journal; the mounted output folder
-# is a FUSE mount that doesn't support this well, so build the DB on local
-# disk first and copy the finished file over.
-TMP_DB_PATH = "/tmp/spotify_analytics.db"
-TMP_JOURNAL = "/tmp/spotify_analytics.db-journal"
-FINAL_DB_PATH = f"{BASE}/spotify_analytics.sqlite"
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = f"{BASE}/spotify_analytics.sqlite"
 
-for p in [TMP_DB_PATH, TMP_JOURNAL]:
+for p in [DB_PATH, f"{DB_PATH}-journal"]:
     if os.path.exists(p):
         os.remove(p)
 
-conn = sqlite3.connect(TMP_DB_PATH)
+conn = sqlite3.connect(DB_PATH)
 with open(f"{BASE}/sql/schema.sql") as f:
     conn.executescript(f.read())
 
@@ -36,6 +31,4 @@ for t in ["tracks", "users", "listen_events"]:
 
 conn.close()
 
-import shutil
-shutil.copyfile(TMP_DB_PATH, FINAL_DB_PATH)
-print(f"Database built and copied to {FINAL_DB_PATH}")
+print(f"Database built at {DB_PATH}")

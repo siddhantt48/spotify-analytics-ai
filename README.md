@@ -81,7 +81,11 @@ the insights script.
    pip install pandas numpy groq
    ```
 2. **(Optional) Regenerate the data** — only needed if you want to change
-   the number of users, weeks, or behavior logic:
+   the number of users, weeks, or behavior logic. This step also needs the
+   raw dataset, which isn't checked in: download `dataset.csv` from the
+   [Spotify Tracks Dataset](https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset)
+   and save it as `data/tracks_raw.csv`. The cleaned `data/tracks.csv` is
+   already in the repo, so skip this if you just want to build the DB.
    ```
    python3 scripts/generate_events.py
    ```
