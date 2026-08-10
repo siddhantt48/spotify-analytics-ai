@@ -78,7 +78,7 @@ the insights script.
 
 1. **Install dependencies**:
    ```
-   pip install pandas numpy groq
+   pip install pandas numpy matplotlib groq
    ```
 2. **(Optional) Regenerate the data** — only needed if you want to change
    the number of users, weeks, or behavior logic. This step also needs the

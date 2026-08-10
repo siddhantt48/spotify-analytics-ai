@@ -89,7 +89,7 @@ def get_data(conn):
 def get_latest_summary():
     if not os.path.exists(INSIGHTS_PATH):
         return "Run scripts/generate_insights.py first to generate the AI summary."
-    text = open(INSIGHTS_PATH).read()
+    text = open(INSIGHTS_PATH, encoding="utf-8").read()
     m = re.search(r"## AI-Generated Summary\n\n(.+?)\n\n---", text, re.S)
     return m.group(1).strip() if m else "Summary not found."
 
@@ -219,7 +219,7 @@ def main():
         data_json=json.dumps(data),
     )
 
-    with open(OUTPUT_PATH, "w") as f:
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         f.write(html)
 
     print(f"Dashboard written to {OUTPUT_PATH} — open it in a browser.")

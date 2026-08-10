@@ -11,7 +11,7 @@ for p in [DB_PATH, f"{DB_PATH}-journal"]:
         os.remove(p)
 
 conn = sqlite3.connect(DB_PATH)
-with open(f"{BASE}/sql/schema.sql") as f:
+with open(f"{BASE}/sql/schema.sql", encoding="utf-8") as f:
     conn.executescript(f.read())
 
 tracks = pd.read_csv(f"{BASE}/data/tracks.csv")

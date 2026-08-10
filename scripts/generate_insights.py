@@ -22,7 +22,7 @@ def load_env_file():
     """Minimal .env loader so we don't need an extra dependency."""
     env_path = f"{BASE}/.env"
     if os.path.exists(env_path):
-        with open(env_path) as f:
+        with open(env_path, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line or line.startswith("#") or "=" not in line:
@@ -33,7 +33,7 @@ def load_env_file():
 
 def get_named_queries():
     """Split analysis_queries.sql into (title, sql) pairs using the '-- N. TITLE' comments."""
-    text = open(SQL_PATH).read()
+    text = open(SQL_PATH, encoding="utf-8").read()
     blocks = re.split(r"\n\n\n", text)
     named = []
     for block in blocks:
@@ -236,7 +236,7 @@ def main():
         f"---\n\n## Raw Query Results\n\n{report_tables}"
     )
 
-    with open(OUTPUT_PATH, "w") as f:
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         f.write(report)
 
     print(f"\nReport written to {OUTPUT_PATH}\n")
